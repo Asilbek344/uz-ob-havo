@@ -107,6 +107,46 @@
 .delay-1 { animation-delay: .08s; } .delay-2 { animation-delay: .16s; } .delay-3 { animation-delay: .24s; }
 .skeleton { background: linear-gradient(100deg, hsl(var(--muted)) 30%, hsl(var(--card)) 50%, hsl(var(--muted)) 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 .weather-shell { min-height: 100dvh; background: radial-gradient(circle at 75% 0%, hsl(187 50% 93% / .8), transparent 31rem), hsl(var(--background)); }
+.weather-shell.time-morning {
+  --background: 35 100% 97%;
+  --foreground: 217 39% 18%;
+  --border: 35 29% 88%;
+  --card: 0 0% 100%;
+  --secondary: 35 75% 92%;
+  --secondary-foreground: 27 56% 25%;
+  --muted: 35 38% 93%;
+  --muted-foreground: 28 18% 45%;
+  --primary: 28 66% 39%;
+  background: radial-gradient(circle at 75% 0%, hsl(39 100% 87% / .85), transparent 31rem), hsl(var(--background));
+}
+.weather-shell.time-day {
+  background: radial-gradient(circle at 75% 0%, hsl(187 50% 93% / .8), transparent 31rem), hsl(var(--background));
+}
+.weather-shell.time-evening {
+  --background: 218 42% 94%;
+  --foreground: 219 39% 18%;
+  --border: 218 28% 83%;
+  --card: 220 35% 99%;
+  --secondary: 214 48% 91%;
+  --secondary-foreground: 216 56% 25%;
+  --muted: 216 28% 91%;
+  --muted-foreground: 218 18% 44%;
+  --primary: 202 66% 37%;
+  background: radial-gradient(circle at 75% 0%, hsl(28 92% 82% / .7), transparent 31rem), hsl(var(--background));
+}
+.weather-shell.time-night {
+  --background: 222 46% 11%;
+  --foreground: 210 36% 92%;
+  --border: 220 30% 25%;
+  --card: 222 42% 16%;
+  --card-foreground: 210 36% 92%;
+  --secondary: 220 34% 23%;
+  --secondary-foreground: 210 36% 92%;
+  --muted: 220 34% 20%;
+  --muted-foreground: 215 20% 68%;
+  --primary: 168 62% 56%;
+  background: radial-gradient(circle at 75% 0%, hsl(222 70% 28% / .65), transparent 31rem), hsl(var(--background));
+}
 .weather-sidebar { background: linear-gradient(160deg, hsl(213 55% 16%), hsl(215 57% 21%)); }
 .weather-main { min-width: 0; }
 .current-card { background: linear-gradient(135deg, hsl(198 66% 36%), hsl(207 68% 26%)); color: white; }

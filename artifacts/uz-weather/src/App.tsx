@@ -99,6 +99,36 @@ const UZ_WEEKDAYS_SHORT = ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan'];
 const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'];
 const UZ_MONTHS_SHORT = ['yan', 'fev', 'mar', 'apr', 'may', 'iyun', 'iyul', 'avg', 'sen', 'okt', 'noy', 'dek'];
 
+type TimePeriod = 'morning' | 'day' | 'evening' | 'night';
+
+const TIME_PERIOD_LABELS: Record<TimePeriod, string> = {
+  morning: 'Ertalab',
+  day: 'Kunduz',
+  evening: 'Kechqurun',
+  night: 'Tun',
+};
+
+function getTimePeriod(hour = new Date().getHours()): TimePeriod {
+  if (hour >= 5 && hour < 11) return 'morning';
+  if (hour >= 11 && hour < 18) return 'day';
+  if (hour >= 18 && hour < 23) return 'evening';
+  return 'night';
+}
+
+function useTimePeriod() {
+  const [period, setPeriod] = useState<TimePeriod>(() => getTimePeriod());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setPeriod(getTimePeriod());
+    }, 60_000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return { period, label: TIME_PERIOD_LABELS[period] };
+}
+
 function formatUzDate(date: Date) {
   return `${UZ_WEEKDAYS[date.getDay()]}, ${date.getDate()}-${UZ_MONTHS[date.getMonth()]}`;
 }
@@ -202,6 +232,7 @@ function Dashboard() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
   const [geoError, setGeoError] = useState('');
+  const { period, label: periodLabel } = useTimePeriod();
 
   useEffect(() => {
     let cancelled = false;
@@ -283,7 +314,7 @@ function Dashboard() {
   }
 
   return (
-    <div className="weather-shell flex min-h-[100dvh]">
+    <div className={`weather-shell time-${period} flex min-h-[100dvh]`} data-time-period={period} aria-label={`Hozirgi rejim: ${periodLabel}`}>
       <aside className={`weather-sidebar fixed inset-y-0 left-0 z-40 w-[274px] shrink-0 px-5 py-6 text-white lg:sticky lg:block ${mobileMenu ? 'block' : 'hidden'}`} data-testid="sidebar-navigation">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -324,7 +355,7 @@ function Dashboard() {
         <header className="flex h-[74px] items-center justify-between border-b border-[hsl(var(--border))] bg-[hsl(var(--background)/.82)] px-5 backdrop-blur-md sm:px-8 lg:px-10" data-testid="header-main">
           <div className="flex items-center gap-3">
             <button type="button" onClick={() => setMobileMenu(true)} className="rounded-xl p-2 hover:bg-[hsl(var(--muted))] lg:hidden" aria-label="Menyuni ochish" data-testid="button-open-menu"><Menu size={21} /></button>
-            <div className="hidden font-mono text-[11px] uppercase tracking-[.16em] text-[hsl(var(--muted-foreground))] sm:block">Bugun, {formatUzDate(new Date())}</div>
+            <div className="hidden font-mono text-[11px] uppercase tracking-[.16em] text-[hsl(var(--muted-foreground))] sm:block">Bugun, {formatUzDate(new Date())} <span className="ml-2 opacity-70">/ {periodLabel}</span></div>
             <div className="font-mono text-[11px] uppercase tracking-[.15em] text-[hsl(var(--muted-foreground))] sm:hidden">OB-HAVO / UZ</div>
           </div>
           <div className="relative flex items-center gap-2">
