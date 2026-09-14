@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "O‘zbekiston Ob-havo"
+description = "O‘zbekiston shaharlari va viloyatlari uchun kunlik va soatlik ob-havo prognozini ko‘rsatadigan zamonaviy, mobilga mos web-ilova."
+version = "1.0.0"
+id = "artifacts/uz-weather"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23991
+
+[services.development]
+run = "pnpm --filter @workspace/uz-weather run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/uz-weather", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/uz-weather/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23991"
+BASE_PATH = "/"
