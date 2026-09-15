@@ -17,6 +17,7 @@ import {
   LocateFixed,
   MapPin,
   Menu,
+  Moon,
   RefreshCw,
   Search,
   Sun,
@@ -130,6 +131,13 @@ function useTimePeriod() {
   }, []);
 
   return { period, label: TIME_PERIOD_LABELS[period] };
+}
+
+function TimePeriodIcon({ period }: { period: TimePeriod }) {
+  if (period === 'morning') return <Sunrise size={14} aria-hidden />;
+  if (period === 'evening') return <Sunset size={14} aria-hidden />;
+  if (period === 'night') return <Moon size={14} aria-hidden />;
+  return <Sun size={14} aria-hidden />;
 }
 
 function formatUzDate(date: Date) {
@@ -358,7 +366,10 @@ function Dashboard() {
         <header className="flex h-[74px] items-center justify-between border-b border-[hsl(var(--border))] bg-[hsl(var(--background)/.82)] px-5 backdrop-blur-md sm:px-8 lg:px-10" data-testid="header-main">
           <div className="flex items-center gap-3">
             <button type="button" onClick={() => setMobileMenu(true)} className="rounded-xl p-2 hover:bg-[hsl(var(--muted))] lg:hidden" aria-label="Menyuni ochish" data-testid="button-open-menu"><Menu size={21} /></button>
-            <div className="hidden font-mono text-[11px] uppercase tracking-[.16em] text-[hsl(var(--muted-foreground))] sm:block">Bugun, {formatUzDate(new Date())} <span className="ml-2 opacity-70">/ {periodLabel}</span></div>
+            <div className="hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[.16em] text-[hsl(var(--muted-foreground))] sm:flex">
+              <span>Bugun, {formatUzDate(new Date())}</span>
+              <span className="flex items-center gap-1 rounded-full bg-[hsl(var(--secondary))] px-2 py-1 text-[10px] tracking-[.1em] text-[hsl(var(--secondary-foreground))]"><TimePeriodIcon period={period} /> {periodLabel}</span>
+            </div>
             <div className="font-mono text-[11px] uppercase tracking-[.15em] text-[hsl(var(--muted-foreground))] sm:hidden">OB-HAVO / UZ</div>
           </div>
           <div className="relative flex items-center gap-2">
