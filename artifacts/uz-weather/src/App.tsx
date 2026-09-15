@@ -31,6 +31,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
+import { getTimePeriod, type TimePeriod } from '@/time-period';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
 const queryClient = new QueryClient();
@@ -99,8 +100,6 @@ const UZ_WEEKDAYS_SHORT = ['Yak', 'Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan'];
 const UZ_MONTHS = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'];
 const UZ_MONTHS_SHORT = ['yan', 'fev', 'mar', 'apr', 'may', 'iyun', 'iyul', 'avg', 'sen', 'okt', 'noy', 'dek'];
 
-type TimePeriod = 'morning' | 'day' | 'evening' | 'night';
-
 const TIME_PERIOD_LABELS: Record<TimePeriod, string> = {
   morning: 'Ertalab',
   day: 'Kunduz',
@@ -108,22 +107,26 @@ const TIME_PERIOD_LABELS: Record<TimePeriod, string> = {
   night: 'Tun',
 };
 
-function getTimePeriod(hour = new Date().getHours()): TimePeriod {
-  if (hour >= 5 && hour < 11) return 'morning';
-  if (hour >= 11 && hour < 18) return 'day';
-  if (hour >= 18 && hour < 23) return 'evening';
-  return 'night';
-}
-
 function useTimePeriod() {
   const [period, setPeriod] = useState<TimePeriod>(() => getTimePeriod());
 
   useEffect(() => {
+    const updatePeriod = () => {
+      if (document.visibilityState === 'visible') {
+        setPeriod(getTimePeriod());
+      }
+    };
     const timer = window.setInterval(() => {
-      setPeriod(getTimePeriod());
+      updatePeriod();
     }, 60_000);
+    document.addEventListener('visibilitychange', updatePeriod);
+    window.addEventListener('focus', updatePeriod);
 
-    return () => window.clearInterval(timer);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', updatePeriod);
+      window.removeEventListener('focus', updatePeriod);
+    };
   }, []);
 
   return { period, label: TIME_PERIOD_LABELS[period] };
